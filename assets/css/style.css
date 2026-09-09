@@ -1,0 +1,498 @@
+/* assets/css/style.css */
+
+:root {
+    /* DEFAULT DARK MODE (Black + Neon Blue) */
+    --bg-color: #050505;
+    --surface-color: #121212;
+    --text-color: #e0e0e0;
+    --text-muted: #a0a0a0;
+
+    --primary-color: #00f3ff;
+    --primary-color-rgb: 0, 243, 255;
+    /* Neon Blue */
+    --secondary-color: #bd00ff;
+    /* Neon Purple (Secondary accent in dark) */
+
+    --glass-bg: rgba(20, 20, 20, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+
+    --card-bg: rgba(30, 30, 30, 0.4);
+    --card-hover-bg: rgba(40, 40, 40, 0.6);
+
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-border: rgba(255, 255, 255, 0.1);
+
+    --shadow-color: rgba(0, 243, 255, 0.2);
+}
+
+/* LIGHT MODE OVERRIDES (White + Neon Purple) */
+body.light-mode {
+    --bg-color: #f8f9fa;
+    --surface-color: #ffffff;
+    --text-color: #212529;
+    --text-muted: #6c757d;
+
+    --primary-color: #bd00ff;
+    --primary-color-rgb: 189, 0, 255;
+    /* Neon Purple */
+    --secondary-color: #00f3ff;
+    /* Neon Blue (Secondary accent in light) */
+
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.05);
+
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-hover-bg: #ffffff;
+
+    --input-bg: rgba(0, 0, 0, 0.03);
+    --input-border: rgba(0, 0, 0, 0.1);
+
+    --shadow-color: rgba(189, 0, 255, 0.2);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+}
+
+/* Subtle Grid Background (Adapts opacity based on mode) */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(var(--glass-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Navbar */
+.navbar {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background-color: var(--glass-bg) !important;
+    border-bottom: 1px solid var(--glass-border);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.navbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+.nav-link {
+    color: var(--text-color) !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 5px;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+    text-shadow: 0 0 8px var(--shadow-color);
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Adjust hero gradients for Light Mode if needed via body.light-mode .hero-section */
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1.1;
+    /* Use Primary to Secondary Gradient */
+    background: linear-gradient(135deg, var(--text-color), var(--primary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 25px;
+    text-shadow: 0 0 30px var(--shadow-color);
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    margin-bottom: 45px;
+    font-weight: 300;
+}
+
+/* Buttons */
+.btn-voltix-primary {
+    background: transparent;
+    color: var(--text-color);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 35px;
+    border-radius: 4px;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 10px var(--shadow-color), inset 0 0 5px var(--shadow-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-voltix-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+
+.btn-voltix-primary:hover::before {
+    width: 100%;
+}
+
+.btn-voltix-primary:hover {
+    color: #fff !important;
+    /* Always white text on hover (filled button) */
+    border-color: transparent;
+    box-shadow: 0 0 25px var(--shadow-color);
+    transform: translateY(-2px);
+}
+
+.btn-voltix-outline {
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--primary-color);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-voltix-outline:hover,
+.btn-voltix-outline.active {
+    background: var(--primary-color) !important;
+    color: #fff !important;
+    box-shadow: 0 0 15px var(--shadow-color);
+    border-color: transparent;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-color);
+    transition: all 0.4s ease;
+    /* Grid Card Enhancements */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.01);
+    background: var(--card-hover-bg);
+    border-color: var(--primary-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--shadow-color);
+}
+
+.card-title {
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.text-gradient {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Feature Cards */
+.feature-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 2.5rem 1.5rem;
+    border-radius: 24px;
+    height: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    /* New Grid Card Styles */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--shadow-color);
+    background: var(--card-hover-bg);
+}
+
+.feature-card i {
+    transition: transform 0.4s ease;
+}
+
+.feature-card:hover i {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.feature-card h4 {
+    color: var(--text-color);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.feature-card p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+/* Specific Light Mode Grid Cards Enhancement */
+body.light-mode .feature-card,
+body.light-mode .card {
+    background: #ffffff;
+    /* Much darker border for visibility on white */
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    /* Stronger shadow */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .feature-card:hover,
+body.light-mode .card:hover {
+    box-shadow: 0 20px 50px rgba(var(--primary-color-rgb), 0.25);
+    border-color: var(--primary-color);
+}
+
+body.light-mode .feature-card:hover {
+    box-shadow: 0 20px 50px rgba(var(--primary-color-rgb), 0.15);
+}
+
+/* Forms */
+.form-control {
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--input-border) !important;
+    color: var(--text-color) !important;
+}
+
+.form-control:focus {
+    background-color: var(--input-bg) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 10px var(--shadow-color) !important;
+}
+
+/* Text Utilities */
+.text-white {
+    color: var(--text-color) !important;
+}
+
+/* Re-map text-white to var for dynamic switching */
+.text-white-50 {
+    color: var(--text-muted) !important;
+}
+
+.bg-dark {
+    background-color: var(--surface-color) !important;
+}
+
+.bg-black {
+    background-color: var(--bg-color) !important;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* Navbar Styled Theme Toggle (Bigger & Floating effect) */
+.theme-toggle-btn.navbar-toggle-styled {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 50% !important;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 0 10px var(--shadow-color);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--primary-color);
+    animation: navbar-floating 3s ease-in-out infinite;
+    padding: 0;
+    margin-top: -2px;
+}
+
+.theme-toggle-btn.navbar-toggle-styled:hover {
+    background: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 0 20px var(--primary-color);
+    transform: scale(1.15);
+}
+
+@keyframes navbar-floating {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+
+@keyframes floating-anim {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+
+/* Cart Specific Styles */
+.quantity-group .btn-qty {
+    padding: 0.25rem 0.75rem;
+    font-weight: bold;
+    color: var(--text-color);
+    border-color: var(--input-border);
+}
+
+.quantity-group .btn-qty:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.qty-input::-webkit-inner-spin-button,
+.qty-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.btn-outline-voltix {
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.btn-outline-voltix:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+/* Glass Effects */
+.glass-header {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.bottom-nav {
+    background-color: var(--glass-bg) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--glass-border);
+    padding: 0.5rem 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1040;
+}
+
+.bottom-nav .nav-link {
+    color: var(--text-color) !important;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    padding: 5px 10px;
+    border-radius: 8px;
+    min-width: 60px;
+}
+
+.bottom-nav .nav-link:hover,
+.bottom-nav .nav-link.active {
+    color: var(--primary-color) !important;
+    opacity: 1;
+    background: rgba(var(--primary-color-rgb), 0.1);
+    transform: translateY(-2px);
+    text-shadow: 0 0 10px var(--shadow-color);
+}
+
+.bottom-nav i {
+    display: block;
+    font-size: 1.2rem;
+}
+
+.bottom-nav small {
+    font-size: 0.7rem;
+    font-weight: 500;
+}

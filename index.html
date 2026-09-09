@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS — Premium Google Review NFC & QR Acrylic Cards</title>
+  <meta name="description" content="Turn 1-tap encounters into 5-star Google reviews with custom acrylic display stands featuring embedded NFC chips and crisp QR codes.">
+  
+  <!-- Fontshare CDN for Clash Display, General Sans, Satoshi & Cabinet Grotesk -->
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&f[]=satoshi@700,900&f[]=cabinet-grotesk@800,900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Ambient Light Background Gradients (Blue + White + Black Mix) -->
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+  <div class="bg-noise" aria-hidden="true"></div>
+
+  <!-- Sticky Header -->
+  <header class="site-header">
+    <div class="header-container container">
+      <a href="#" class="brand-logo" aria-label="NEXUS Home">
+        <span class="brand-name">NEXUS</span>
+      </a>
+
+      <!-- Right Header Actions (Theme Switcher + Cart Trigger) -->
+      <div class="header-right-actions">
+        <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle Light / Dark Theme" title="Toggle Light / Dark mode">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- Cart Trigger Button -->
+        <button id="cart-drawer-toggle" class="cart-trigger-btn" aria-label="Open shopping cart drawer" aria-expanded="false" aria-controls="cart-drawer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="cart-btn-text">Cart</span>
+          <span id="cart-count-badge" class="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    
+    <!-- Hero Section (Swaps content based on active tab) -->
+    <section class="hero-section container">
+      <!-- Review Card Hero View -->
+      <div id="hero-review-panel" class="hero-panel active">
+        <div class="hero-grid">
+          <div class="hero-text-content">
+            <div class="pill-tag">
+              <span class="tag-pulse"></span>
+              <span class="tag-text">NFC & QR Google Review Display Stands</span>
+            </div>
+            <h1 class="hero-title">Turn In-Person Encounters into <span class="gold-gradient-text">5-Star Google Reviews</span>.</h1>
+            <p class="hero-description">
+              Premium acrylic display stands equipped with instant NFC technology and crisp high-definition QR codes. Allow customers to submit verified Google reviews in under 5 seconds with a single tap.
+            </p>
+            
+            <div class="hero-actions">
+              <a href="#configure" class="btn btn-primary btn-glow">
+                <span>Configure Your Stand</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </a>
+              <a href="#showcase" class="btn btn-secondary">
+                <span>Explore Finishes</span>
+              </a>
+            </div>
+
+            <div class="hero-trust-badges">
+              <div class="rating-stars" aria-label="5 out of 5 stars">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+              </div>
+              <p class="trust-text"><strong>4.9 / 5.0 Rating</strong> — Trusted by 350+ restaurants, salons & retail outlets</p>
+            </div>
+          </div>
+
+          <!-- Hero Tilted Floating Mockup with Full Product Photo -->
+          <div class="hero-visual">
+            <div class="acrylic-card-mockup-wrapper">
+              <div class="acrylic-card-hero-mockup" id="hero-mockup-card">
+                <div class="acrylic-card-image-wrapper">
+                  <img src="assets/google_card_blue.png" alt="NEXUS Google Review NFC QR Acrylic Stand Royal Blue Edition" class="hero-card-img" id="hero-img-display">
+                  <div class="acrylic-glass-reflection"></div>
+                </div>
+                <div class="acrylic-base-stand"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Large Rectangle Grid Showcase Section with Clean 3D Stacked Cards -->
+    <section id="showcase" class="section-showcase container">
+      <div class="section-header">
+        <span class="section-subtitle">DESIGN & ENGINEERING</span>
+        <h2 class="section-title">Built like fine glass. Engineered to convert.</h2>
+      </div>
+
+      <!-- Large Glassmorphism Rectangle Grid Container -->
+      <div class="large-rectangle-showcase glass-panel">
+        
+        <!-- Left & Right Center Floating Navigation Arrows -->
+        <button id="prev-finish-btn" class="showcase-nav-arrow arrow-left" aria-label="Previous edition (Royal Blue & White / Black)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <button id="next-finish-btn" class="showcase-nav-arrow arrow-right" aria-label="Next edition (Royal Blue & White / Black)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Left Side: Controls & Feature Specifications -->
+        <div class="showcase-content-side">
+          <div class="edition-header-box">
+            <span class="edition-tag">FLAGSHIP EDITION</span>
+            <h3 id="variant-name-display" class="showcase-edition-title">Royal Blue & White Edition</h3>
+            <p id="variant-desc-display" class="showcase-edition-desc">
+              Vibrant royal blue header with signature cyan wave line, NFC tap zone, and crisp QR code.
+            </p>
+          </div>
+
+          <!-- Specs List -->
+          <ul class="specs-grid-inline">
+            <li class="spec-inline-item">
+              <span class="spec-dot">⚡</span>
+              <span><strong>Instant NFC Chip</strong> (0.5s response)</span>
+            </li>
+            <li class="spec-inline-item">
+              <span class="spec-dot">📱</span>
+              <span><strong>HD Vector QR Code</strong> (High contrast print)</span>
+            </li>
+            <li class="spec-inline-item">
+              <span class="spec-dot">💎</span>
+              <span><strong>3mm Shatterproof Acrylic</strong></span>
+            </li>
+            <li class="spec-inline-item">
+              <span class="spec-dot">🚀</span>
+              <span><strong>Pre-Programmed</strong> with your Google Link</span>
+            </li>
+          </ul>
+
+          <!-- Swatches Controller Bar -->
+          <div class="swipe-controller-bar">
+            <div class="variant-swatches" role="radiogroup" aria-label="Acrylic edition selector">
+              <button class="swatch-btn active" data-finish="blue" aria-label="Royal Blue & White Edition" role="radio" aria-checked="true">
+                <span class="swatch-color swatch-blue"></span>
+                <span class="swatch-label">Blue & White</span>
+              </button>
+              <button class="swatch-btn" data-finish="black" aria-label="Black Edition" role="radio" aria-checked="false">
+                <span class="swatch-color swatch-black"></span>
+                <span class="swatch-label">Black</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Clean 3D Stacked Product Cards (No Inner Box Grid) -->
+        <div class="showcase-grid-display-side" id="pedestal-container">
+          <div class="pedestal-lighting" id="pedestal-glow"></div>
+          
+          <div class="card-3d-scene">
+            <div class="card-stack-wrapper" id="card-stack" title="Click to swap card editions!">
+              
+              <!-- Blue Card (Front Default - Full Image Edge-to-Edge) -->
+              <div class="stacked-card card-blue active-front" id="card-blue" data-edition="blue">
+                <div class="card-full-image-wrapper">
+                  <img src="assets/google_card_blue.png" alt="NEXUS Royal Blue Edition" class="full-card-img">
+                  <div class="acrylic-glass-reflection"></div>
+                </div>
+              </div>
+
+              <!-- Black Card (Peeping Behind - Full Image Edge-to-Edge) -->
+              <div class="stacked-card card-black peeping-back" id="card-black" data-edition="black">
+                <div class="card-full-image-wrapper">
+                  <img src="assets/google_card_black.jpg" alt="NEXUS Black Edition" class="full-card-img">
+                  <div class="acrylic-glass-reflection"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="pedestal-glass-base"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Customization & Tier Selector Panel Section -->
+    <section id="configure" class="section-customization container">
+      <div class="section-header">
+        <span class="section-subtitle">STOREFRONT & CUSTOMIZATION</span>
+        <h2 class="section-title">Configure your display stand order</h2>
+      </div>
+
+      <div class="customization-wrapper glass-panel">
+        
+        <!-- Step 1: Select Tier -->
+        <div class="config-step">
+          <label class="step-label">
+            <span class="step-num">1</span>
+            <span class="step-title">Select Base Tier & Package</span>
+          </label>
+
+          <div class="pricing-tiers-grid" role="radiogroup" aria-label="Select pricing tier">
+            
+            <!-- Tier 1: Normal print -->
+            <label class="tier-card glass-panel-subtle" data-tier-id="tier-normal">
+              <input type="radio" name="pricing-tier" value="normal" class="tier-radio-input" data-price="600">
+              <div class="tier-content">
+                <div class="tier-header">
+                  <span class="tier-title">Normal Print</span>
+                  <span class="tier-price">₹600</span>
+                </div>
+                <p class="tier-desc">Flat acrylic review card with embedded NFC chip & printed QR code. (Without stand).</p>
+              </div>
+            </label>
+
+            <!-- Tier 2: Normal print with stand (Default Recommended) -->
+            <label class="tier-card glass-panel-subtle active" data-tier-id="tier-stand">
+              <input type="radio" name="pricing-tier" value="stand" class="tier-radio-input" data-price="850" checked>
+              <div class="recommended-badge">Most Popular</div>
+              <div class="tier-content">
+                <div class="tier-header">
+                  <span class="tier-title">Normal Print + Base Stand</span>
+                  <span class="tier-price">₹850</span>
+                </div>
+                <p class="tier-desc">Acrylic review card complete with matching slotted acrylic pedestal stand for counter placement.</p>
+              </div>
+            </label>
+
+            <!-- Tier 3: Custom print -->
+            <label class="tier-card glass-panel-subtle" data-tier-id="tier-custom">
+              <input type="radio" name="pricing-tier" value="custom" class="tier-radio-input" data-price="1200">
+              <div class="tier-content">
+                <div class="tier-header">
+                  <span class="tier-title">Custom Full Print</span>
+                  <span class="tier-price">₹1200</span>
+                </div>
+                <p class="tier-desc">Fully bespoke brand layout & logo print — matching acrylic pedestal stand included.</p>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+        <!-- Step 2: Upload Artwork / Logo (ONLY visible when Custom Full Print tier is selected) -->
+        <div class="config-step" id="artwork-upload-step" style="display: none;" hidden>
+          <label class="step-label">
+            <span class="step-num">2</span>
+            <span class="step-title">Upload Business Logo / Custom Artwork (Custom Print Tier Only)</span>
+          </label>
+
+          <!-- Dropzone Prompt Box -->
+          <div class="file-upload-dropzone glass-panel-subtle" id="dropzone">
+            <input type="file" id="artwork-file-input" accept="image/png, image/jpeg, image/svg+xml, application/pdf" class="file-input-hidden">
+            <div class="dropzone-content" id="dropzone-prompt">
+              <div class="dropzone-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <p class="dropzone-text"><strong>Click to upload</strong> or drag and drop your logo file</p>
+              <span class="dropzone-sub">Supports PNG, JPG, SVG or PDF (High resolution recommended)</span>
+            </div>
+          </div>
+
+          <!-- Image Preview Box (Shown when file is uploaded) -->
+          <div class="upload-preview-box glass-panel-subtle" id="upload-preview" hidden>
+            <img id="preview-img-element" src="" alt="Uploaded logo preview">
+            <div class="preview-info">
+              <span id="preview-filename" class="file-name">logo.png</span>
+              <span class="file-status">Ready for print preparation</span>
+            </div>
+            <button type="button" id="remove-file-btn" class="btn-remove-file" aria-label="Remove uploaded file">
+              &times;
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Configure NFC, QR & Google Review URL -->
+        <div class="config-step" id="tech-google-step">
+          <label class="step-label">
+            <span class="step-num" id="tech-google-step-num">2</span>
+            <span class="step-title">Card Technology & Google Link</span>
+          </label>
+
+          <div class="toggles-grid">
+            <label class="toggle-control glass-panel-subtle">
+              <input type="checkbox" id="toggle-nfc" checked class="toggle-checkbox">
+              <span class="toggle-switch"></span>
+              <div class="toggle-info">
+                <strong>Include NFC Chip</strong>
+                <span>Embedded contactless chip programmed with your link.</span>
+              </div>
+            </label>
+
+            <label class="toggle-control glass-panel-subtle">
+              <input type="checkbox" id="toggle-qr" checked class="toggle-checkbox">
+              <span class="toggle-switch"></span>
+              <div class="toggle-info">
+                <strong>Include QR Code</strong>
+                <span>Printed QR code fallback for older phone cameras.</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="input-field-group">
+            <label for="google-url-input" class="input-label">Your Google Review Page URL</label>
+            <input type="url" id="google-url-input" class="glass-input" placeholder="e.g. https://g.page/r/your-business/review" required>
+            <p class="input-helper-text">
+              Need help? Search your business on Google Maps &rarr; click "Share" &rarr; copy short link.
+            </p>
+          </div>
+        </div>
+
+        <!-- Add to Cart Footer Bar -->
+        <div class="config-summary-bar">
+          <div class="config-price-box">
+            <span class="total-label">Total Price</span>
+            <div class="price-display">
+              <span id="computed-price-text">₹850</span>
+              <span class="tax-tag">GST & Shipping included</span>
+            </div>
+          </div>
+
+          <button id="add-to-cart-btn" class="btn btn-primary btn-glow btn-large">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 2L3 6v14a2 2 0 0 1-2 2h14a2 2 0 0 1-2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <span>Add Item to Cart</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- "Why Work With Us" Section (Asymmetric Bento Anchor) -->
+    <section class="section-why container" id="why-us">
+      <div class="section-header">
+        <span class="section-subtitle">PROVEN RESULTS</span>
+        <h2 class="section-title">Why top local brands choose NEXUS</h2>
+      </div>
+
+      <div class="bento-grid-why">
+        
+        <!-- Large Stat Visual Anchor Card -->
+        <div class="why-anchor-card glass-panel">
+          <div class="anchor-glow"></div>
+          <div class="anchor-content">
+            <div class="anchor-top-row">
+              <span class="stat-badge">VERIFIED METRIC</span>
+              <span class="stat-growth-tag">+4.1x Growth</span>
+            </div>
+            <div class="stat-number">+410%</div>
+            <h3 class="stat-heading">Average Increase in Monthly 5-Star Reviews</h3>
+            <p class="stat-description">
+              Businesses using physical NEXUS NFC stands collect up to 4x more customer feedback on the spot before customers leave, compared to automated SMS or follow-up email requests.
+            </p>
+            
+            <!-- Professional Horizontal Comparative Analytics Widget -->
+            <div class="metric-comparison-widget">
+              <div class="metric-row">
+                <div class="metric-info">
+                  <span class="metric-name">Automated SMS / Email Links</span>
+                  <span class="metric-val">12% Response Rate</span>
+                </div>
+                <div class="metric-track">
+                  <div class="metric-fill fill-sms" style="width: 18%;"></div>
+                </div>
+              </div>
+
+              <div class="metric-row active-metric">
+                <div class="metric-info">
+                  <span class="metric-name">NEXUS Countertop NFC Stand</span>
+                  <span class="metric-val highlight-val">84% Response Rate (+410%)</span>
+                </div>
+                <div class="metric-track">
+                  <div class="metric-fill fill-nfc" style="width: 88%;"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Side: 3 Feature Cards Stack -->
+        <div class="why-features-stack">
+          
+          <!-- Feature Card 1 -->
+          <div class="why-sub-card glass-panel">
+            <div class="sub-card-icon icon-cyan">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="sub-card-body">
+              <h4 class="sub-card-title">Commercial Grade UV Back-Print</h4>
+              <p class="sub-card-text">
+                Printed using high-grade UV inks cured directly onto the acrylic back surface. Scratch-proof, fade-resistant, and easily washable with disinfectant sprays.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature Card 2 -->
+          <div class="why-sub-card glass-panel">
+            <div class="sub-card-icon icon-gold">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F2B84B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div class="sub-card-body">
+              <h4 class="sub-card-title">Zero Monthly Software Fees</h4>
+              <p class="sub-card-text">
+                Pay once and own it forever. No subscriptions, hidden dashboard fees, or third-party redirection middleman servers. Direct to Google.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature Card 3 -->
+          <div class="why-sub-card glass-panel">
+            <div class="sub-card-icon icon-cyan">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
+            </div>
+            <div class="sub-card-body">
+              <h4 class="sub-card-title">Universal iOS & Android Tap</h4>
+              <p class="sub-card-text">
+                Pre-programmed NTAG213 NFC chip + high-definition vector QR code. Works out of the box with 100% of modern smartphones without extra apps.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+    </section>
+
+    <!-- Verified Client Case Study Spotlight Section (Dubai Laban Sweet Shop) -->
+    <section class="section-client-spotlight container">
+      <div class="spotlight-card glass-panel">
+        <div class="spotlight-grid">
+          
+          <!-- Left: Real Photo Frame of Dubai Laban Sweet Shop Stand -->
+          <div class="spotlight-visual">
+            <div class="spotlight-img-frame">
+              <img src="assets/dubai_laban_card.jpg" alt="Custom NEXUS NFC Review Stand for Dubai Laban Sweet Shop" class="spotlight-client-img">
+              <div class="spotlight-badge-tag">
+                <span class="verified-dot"></span>
+                <span>Verified Custom Order</span>
+              </div>
+              <div class="acrylic-glass-reflection"></div>
+            </div>
+          </div>
+
+          <!-- Right: Client Story & Testimonial -->
+          <div class="spotlight-content">
+            <div class="spotlight-header-tag">
+              <span class="spotlight-icon">🏆</span>
+              <span class="spotlight-tag-text">CLIENT SUCCESS SPOTLIGHT</span>
+            </div>
+            
+            <h3 class="spotlight-title">Dubai Laban Sweet Shop</h3>
+            
+            <blockquote class="spotlight-quote">
+              "We were blown away by the acrylic print quality and NFC tap speed. Our customers love tapping their phones at the billing counter to post 5-star Google reviews in seconds. Exceptional service from NEXUS."
+            </blockquote>
+
+            <div class="spotlight-stats-row">
+              <div class="spotlight-stat-item">
+                <span class="stat-val">+380%</span>
+                <span class="stat-lbl">Google Reviews</span>
+              </div>
+              <div class="spotlight-stat-item">
+                <span class="stat-val">0.5s</span>
+                <span class="stat-lbl">NFC Tap Speed</span>
+              </div>
+              <div class="spotlight-stat-item">
+                <span class="stat-val">100%</span>
+                <span class="stat-lbl">Client Satisfaction</span>
+              </div>
+            </div>
+
+            <div class="spotlight-cta-row">
+              <a href="#configure" class="btn btn-primary btn-sm">
+                <span>Order Custom Print Like Dubai Laban (₹1200) &rarr;</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Accordion Section -->
+    <section class="section-faq container" id="faq">
+      <div class="faq-layout-grid">
+        
+        <!-- Left Column: FAQ Header & Support CTA -->
+        <div class="faq-header-column">
+          <div class="section-header align-left">
+            <span class="section-subtitle">COMMON QUESTIONS</span>
+            <h2 class="section-title">Everything you need to know</h2>
+            <p class="faq-header-desc">
+              Have questions about NFC phone compatibility, custom print graphics, or bulk order delivery? We've got you covered.
+            </p>
+          </div>
+
+          <div class="faq-help-box glass-panel-subtle">
+            <div class="help-box-header">
+              <div class="help-icon-badge">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="help-box-title">Have a specific question?</h4>
+                <p class="help-box-sub">Chat live with our NEXUS support team on WhatsApp.</p>
+              </div>
+            </div>
+            <a href="https://wa.me/919876543210" target="_blank" rel="noopener" class="btn btn-whatsapp btn-sm mt-3">
+              <span>Ask Support on WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column: Sleek Card Accordion Stack -->
+        <div class="faq-accordion-stack">
+          
+          <div class="faq-card glass-panel-subtle">
+            <button class="faq-question-btn" aria-expanded="false">
+              <div class="faq-question-left">
+                <span class="faq-q-badge">📱</span>
+                <span class="faq-q-text">How does the customer tap their phone on the stand?</span>
+              </div>
+              <span class="faq-chevron-pill">
+                <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-panel" hidden>
+              <p>
+                NFC (Near Field Communication) works automatically on all modern iPhones (iPhone 7 and newer) and Android smartphones. The customer simply holds the top of their phone near the top of the acrylic stand. A notification pop-up appears instantly on their phone screen tapping which opens your Google Review page.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-card glass-panel-subtle">
+            <button class="faq-question-btn" aria-expanded="false">
+              <div class="faq-question-left">
+                <span class="faq-q-badge">📍</span>
+                <span class="faq-q-text">Where do I find my exact Google Review link?</span>
+              </div>
+              <span class="faq-chevron-pill">
+                <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-panel" hidden>
+              <p>
+                Log into your Google Business Profile, search your business name on Google, and click "Ask for reviews". Copy the short URL provided (e.g. <code>https://g.page/r/.../review</code>) and paste it in Step 2 of our builder. If you are unsure, our team will verify your link after your order.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-card glass-panel-subtle">
+            <button class="faq-question-btn" aria-expanded="false">
+              <div class="faq-question-left">
+                <span class="faq-q-badge">🏢</span>
+                <span class="faq-q-text">Can I place bulk orders with different URLs for multi-location businesses?</span>
+              </div>
+              <span class="faq-chevron-pill">
+                <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-panel" hidden>
+              <p>
+                Yes! For multi-branch restaurant chains, franchises, or retail groups, you can customize each stand with a specific branch URL. Add each branch's item to the cart or contact us directly via WhatsApp for corporate bulk discount invoicing.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-card glass-panel-subtle">
+            <button class="faq-question-btn" aria-expanded="false">
+              <div class="faq-question-left">
+                <span class="faq-q-badge">⚡</span>
+                <span class="faq-q-text">How fast is turnaround and shipping?</span>
+              </div>
+              <span class="faq-chevron-pill">
+                <svg class="faq-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer-panel" hidden>
+              <p>
+                Standard orders are printed, programmed, and dispatched within 24 to 48 hours. Express courier shipping takes 3-5 business days across major cities.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Slide-in Cart Drawer -->
+  <div id="cart-drawer-overlay" class="cart-overlay" hidden></div>
+  <aside id="cart-drawer" class="cart-drawer glass-panel" aria-label="Shopping Cart Drawer" aria-hidden="true" role="dialog">
+    <div class="drawer-header">
+      <div class="drawer-title-box">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 1-2 2h14a2 2 0 0 1-2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <h3>Your Order Cart</h3>
+      </div>
+      <button id="cart-close-btn" class="btn-close-drawer" aria-label="Close cart drawer">&times;</button>
+    </div>
+
+    <!-- Cart Line Items Container -->
+    <div id="cart-items-list" class="drawer-body">
+      <!-- Empty Cart View -->
+      <div id="empty-cart-msg" class="empty-cart">
+        <div class="empty-icon">🛒</div>
+        <p>Your cart is empty.</p>
+        <a href="#configure" class="btn btn-secondary btn-sm" id="empty-cart-shop-btn">Build Your Card</a>
+      </div>
+    </div>
+
+    <!-- Cart Footer & Order Compilation Buttons -->
+    <div class="drawer-footer">
+      <div class="subtotal-row">
+        <span>Order Subtotal:</span>
+        <span id="cart-subtotal-price" class="subtotal-amount">₹0</span>
+      </div>
+
+      <p class="checkout-note">Direct manual checkout — compile order details & send via:</p>
+
+      <div class="checkout-actions">
+        <button id="checkout-whatsapp-btn" class="btn btn-whatsapp">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+          </svg>
+          <span>Checkout via WhatsApp</span>
+        </button>
+
+        <button id="checkout-email-btn" class="btn btn-secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <span>Checkout via Email</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container container">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <span class="brand-name">NEXUS</span>
+        </div>
+        <p class="footer-desc">
+          Crafting premium physical NFC & QR acrylic tools for modern businesses to capture real customer feedback effortlessly.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <span class="footer-title">Products</span>
+          <ul>
+            <li><a href="#configure">Google Review Cards</a></li>
+            <li><a href="#configure">Custom Acrylic Print</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <span class="footer-title">Support & Contact</span>
+          <ul>
+            <li><a href="#faq">Help & FAQ</a></li>
+            <li><a href="https://wa.me/919876543210" target="_blank" rel="noopener">WhatsApp Support</a></li>
+            <li><a href="mailto:support@nexuscards.com">support@nexuscards.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom container">
+      <p>&copy; 2026 NEXUS. All rights reserved. Handcrafted acrylic display card storefront.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
