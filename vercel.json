@@ -1,9 +1,9 @@
 {
-  "cleanUrls": true,
-  "routes": [
+  "version": 2,
+  "builds": [
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "src": "**",
+      "use": "@vercel/static"
     }
   ]
 }
