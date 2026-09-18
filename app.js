@@ -478,9 +478,9 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <div class="item-tech-tags">
-          ${item.nfc ? '<span class="tech-tag">⚡ NFC Chip</span>' : ''}
-          ${item.qr ? '<span class="tech-tag">📱 QR Code</span>' : ''}
-          ${item.fileName !== 'None' ? `<span class="tech-tag">🎨 File: ${item.fileName}</span>` : ''}
+          ${item.nfc ? '<span class="tech-tag">NFC Enabled</span>' : ''}
+          ${item.qr ? '<span class="tech-tag">QR Code</span>' : ''}
+          ${item.fileName !== 'None' ? `<span class="tech-tag">Artwork: ${item.fileName}</span>` : ''}
         </div>
 
         <div class="item-controls-row">
