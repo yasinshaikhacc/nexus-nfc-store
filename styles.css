@@ -598,13 +598,7 @@ button, input {
 }
 
 .acrylic-base-stand {
-  height: 18px;
-  width: 88%;
-  margin: 12px auto 14px auto;
-  background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.06) 100%);
-  border: 1px solid rgba(255,255,255,0.28);
-  border-radius: 6px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  display: none !important;
 }
 
 /* Coming Soon View Panel */
@@ -960,13 +954,7 @@ button, input {
 }
 
 .pedestal-glass-base {
-  width: 250px;
-  height: 22px;
-  margin: 16px auto 0 auto;
-  background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 100%);
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 6px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  display: none !important;
 }
 
 /* 8. Customization & Pricing Panel Section */
