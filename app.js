@@ -147,82 +147,49 @@ document.addEventListener('DOMContentLoaded', () => {
       if (variantDescDisplay) variantDescDisplay.textContent = activeVariant.desc;
     }
 
-    // Update Swatch Buttons
+    // Update Swatch Buttons & Color Option Cards
     swatchBtns.forEach((btn) => {
       const isSelected = btn.dataset.finish === activeVariant.id;
       btn.classList.toggle('active', isSelected);
       btn.setAttribute('aria-checked', isSelected ? 'true' : 'false');
     });
+
+    const colorOptionCards = document.querySelectorAll('.color-option-card');
+    colorOptionCards.forEach((card) => {
+      const isSelected = card.dataset.color === activeVariant.id;
+      card.classList.toggle('active', isSelected);
+      const radio = card.querySelector('.color-radio-input');
+      if (radio) radio.checked = isSelected;
+    });
   }
-
-  // ==========================================
-  // AUTO ROTATE / AUTOMATIC CARD SWAPPER (3.5s)
-  // ==========================================
-  let autoRotateTimer = null;
-
-  function startAutoRotate() {
-    stopAutoRotate();
-    autoRotateTimer = setInterval(() => {
-      const nextIdx = (state.currentFinishIndex + 1) % FINISH_VARIANTS.length;
-      updateFinishDisplay(nextIdx);
-    }, 3500);
-  }
-
-  function stopAutoRotate() {
-    if (autoRotateTimer) {
-      clearInterval(autoRotateTimer);
-      autoRotateTimer = null;
-    }
-  }
-
-  // Start automatic self-changing cards on launch
-  startAutoRotate();
-
-  // Pause auto-rotate when user hovers or interacts, resume on leave
-  const showcaseCardContainer = document.querySelector('.large-rectangle-showcase');
-  const heroMockupContainer = document.querySelector('.acrylic-card-mockup-wrapper');
-
-  [showcaseCardContainer, heroMockupContainer].forEach(container => {
-    if (!container) return;
-    container.addEventListener('mouseenter', stopAutoRotate);
-    container.addEventListener('mouseleave', startAutoRotate);
-  });
 
   // Click on the Stack itself to Swap Front / Peeping Back cards manually!
   cardStack?.addEventListener('click', () => {
-    stopAutoRotate();
     const nextIdx = (state.currentFinishIndex + 1) % FINISH_VARIANTS.length;
     updateFinishDisplay(nextIdx);
-    startAutoRotate();
   });
 
   swatchBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      stopAutoRotate();
       const finishId = btn.dataset.finish;
       const index = FINISH_VARIANTS.findIndex(v => v.id === finishId);
       if (index !== -1 && index !== state.currentFinishIndex) {
         updateFinishDisplay(index);
       }
-      startAutoRotate();
     });
   });
 
   prevFinishBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    stopAutoRotate();
     const nextIdx = (state.currentFinishIndex - 1 + FINISH_VARIANTS.length) % FINISH_VARIANTS.length;
     updateFinishDisplay(nextIdx);
-    startAutoRotate();
   });
 
   nextFinishBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    stopAutoRotate();
     const nextIdx = (state.currentFinishIndex + 1) % FINISH_VARIANTS.length;
     updateFinishDisplay(nextIdx);
-    startAutoRotate();
   });
 
   // ==========================================
@@ -235,8 +202,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleNfc = document.getElementById('toggle-nfc');
   const toggleQr = document.getElementById('toggle-qr');
   const googleUrlInput = document.getElementById('google-url-input');
-  const artworkUploadStep = document.getElementById('artwork-upload-step');
-  const techGoogleStepNum = document.getElementById('tech-google-step-num');
+  const businessNameInput = document.getElementById('business-name-input');
+  const contactNameInput = document.getElementById('contact-name-input');
+  const deliveryAddressInput = document.getElementById('delivery-address-input');
+  const whatsappDirectOrderBtn = document.getElementById('whatsapp-direct-order-btn');
 
   function updatePriceDisplay() {
     const selectedRadio = document.querySelector('.tier-radio-input:checked');
@@ -245,21 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
       state.selectedTier = tierId;
       const price = TIER_DATA[tierId].price;
       if (computedPriceText) computedPriceText.textContent = `₹${price}`;
-
-      // Upload print option should ONLY appear when custom print (tierId === 'custom') is selected!
-      if (tierId === 'custom') {
-        if (artworkUploadStep) {
-          artworkUploadStep.style.display = 'block';
-          artworkUploadStep.removeAttribute('hidden');
-        }
-        if (techGoogleStepNum) techGoogleStepNum.textContent = '3';
-      } else {
-        if (artworkUploadStep) {
-          artworkUploadStep.style.display = 'none';
-          artworkUploadStep.setAttribute('hidden', 'true');
-        }
-        if (techGoogleStepNum) techGoogleStepNum.textContent = '2';
-      }
     }
 
     tierCards.forEach(card => {
@@ -287,19 +241,55 @@ document.addEventListener('DOMContentLoaded', () => {
     state.qrEnabled = e.target.checked;
   });
 
-  googleUrlInput?.addEventListener('input', (e) => {
-    state.googleUrl = e.target.value;
+  const colorRadioInputs = document.querySelectorAll('.color-radio-input');
+  colorRadioInputs.forEach(input => {
+    input.addEventListener('change', (e) => {
+      const colorId = e.target.value;
+      const index = FINISH_VARIANTS.findIndex(v => v.id === colorId);
+      if (index !== -1) {
+        updateFinishDisplay(index);
+      }
+    });
   });
 
-  // Artwork File Upload Drag-and-Drop
+  // ==========================================
+  // 5. ARTWORK MODAL & DIRECT WHATSAPP ORDER COMPILER
+  // ==========================================
+
+  const artworkModalOverlay = document.getElementById('artwork-modal-overlay');
+  const artworkModalCloseBtn = document.getElementById('artwork-modal-close-btn');
+  const modalSubmitWhatsappBtn = document.getElementById('modal-submit-whatsapp-btn');
+
   const dropzone = document.getElementById('dropzone');
   const artworkFileInput = document.getElementById('artwork-file-input');
-  const dropzonePrompt = document.getElementById('dropzone-prompt');
   const uploadPreview = document.getElementById('upload-preview');
   const previewImgElement = document.getElementById('preview-img-element');
   const previewFilename = document.getElementById('preview-filename');
   const removeFileBtn = document.getElementById('remove-file-btn');
 
+  function openArtworkModal() {
+    if (!artworkModalOverlay) return;
+    artworkModalOverlay.hidden = false;
+    artworkModalOverlay.classList.add('open');
+  }
+
+  function closeArtworkModal() {
+    if (!artworkModalOverlay) return;
+    artworkModalOverlay.classList.remove('open');
+    setTimeout(() => {
+      artworkModalOverlay.hidden = true;
+    }, 300);
+  }
+
+  artworkModalCloseBtn?.addEventListener('click', closeArtworkModal);
+  
+  artworkModalOverlay?.addEventListener('click', (e) => {
+    if (e.target === artworkModalOverlay) {
+      closeArtworkModal();
+    }
+  });
+
+  // Handle File Selection inside Modal Dropzone
   function handleFileSelect(file) {
     if (!file) return;
     state.uploadedFile = file;
@@ -366,226 +356,66 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ==========================================
-  // 5. SHOPPING CART & DRAWER
-  // ==========================================
+  function sendOrderToWhatsApp() {
+    const tierInfo = TIER_DATA[state.selectedTier] || TIER_DATA.stand;
+    const finishInfo = FINISH_VARIANTS[state.currentFinishIndex] || FINISH_VARIANTS[0];
+    
+    const googleUrl = googleUrlInput?.value.trim() || '';
+    const businessName = businessNameInput?.value.trim() || '';
+    const contactInfo = contactNameInput?.value.trim() || '';
+    const deliveryAddress = deliveryAddressInput?.value.trim() || '';
 
-  const cartDrawerToggle = document.getElementById('cart-drawer-toggle');
-  const cartDrawer = document.getElementById('cart-drawer');
-  const cartDrawerOverlay = document.getElementById('cart-drawer-overlay');
-  const cartCloseBtn = document.getElementById('cart-close-btn');
-  const cartCountBadge = document.getElementById('cart-count-badge');
-  const cartItemsList = document.getElementById('cart-items-list');
-  const emptyCartMsg = document.getElementById('empty-cart-msg');
-  const cartSubtotalPrice = document.getElementById('cart-subtotal-price');
-  const addToCartBtn = document.getElementById('add-to-cart-btn');
-
-  function saveCart() {
-    localStorage.setItem('nexus_nfc_cart', JSON.stringify(state.cart));
-    renderCart();
-  }
-
-  function toggleCartDrawer(open) {
-    const isOpen = open !== undefined ? open : !cartDrawer.classList.contains('open');
-    cartDrawer.classList.toggle('open', isOpen);
-    cartDrawer.setAttribute('aria-hidden', (!isOpen).toString());
-    cartDrawerToggle.setAttribute('aria-expanded', isOpen.toString());
-    if (cartDrawerOverlay) cartDrawerOverlay.hidden = !isOpen;
-  }
-
-  cartDrawerToggle?.addEventListener('click', () => toggleCartDrawer(true));
-  cartCloseBtn?.addEventListener('click', () => toggleCartDrawer(false));
-  cartDrawerOverlay?.addEventListener('click', () => toggleCartDrawer(false));
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && cartDrawer?.classList.contains('open')) {
-      toggleCartDrawer(false);
-    }
-  });
-
-  function showToast(message) {
-    let toast = document.querySelector('.toast-notification');
-    if (!toast) {
-      toast = document.createElement('div');
-      toast.className = 'toast-notification';
-      document.body.appendChild(toast);
-    }
-    toast.innerHTML = `<span class="toast-icon">✓</span> <span>${message}</span>`;
-    toast.classList.add('show');
-
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 2800);
-  }
-
-  // Add Item to Cart Action
-  addToCartBtn?.addEventListener('click', () => {
-    const reviewUrl = googleUrlInput?.value.trim() || 'Not specified yet';
-    const tierInfo = TIER_DATA[state.selectedTier];
-    const currentFinish = FINISH_VARIANTS[state.currentFinishIndex];
-
-    const newItem = {
-      id: 'item_' + Date.now(),
-      tierId: state.selectedTier,
-      tierName: tierInfo.name,
-      price: tierInfo.price,
-      finishId: currentFinish.id,
-      finishName: currentFinish.name,
-      nfc: state.nfcEnabled,
-      qr: state.qrEnabled,
-      googleUrl: reviewUrl,
-      fileName: state.uploadedFile ? state.uploadedFile.name : 'None',
-      qty: 1
-    };
-
-    state.cart.push(newItem);
-    saveCart();
-    showToast(`Added ${tierInfo.name} (${currentFinish.name}) to cart!`);
-    setTimeout(() => toggleCartDrawer(true), 300);
-  });
-
-  function renderCart() {
-    const totalCount = state.cart.reduce((sum, item) => sum + item.qty, 0);
-    const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-
-    if (cartCountBadge) cartCountBadge.textContent = totalCount;
-    if (cartSubtotalPrice) cartSubtotalPrice.textContent = `₹${subtotal}`;
-
-    if (!cartItemsList) return;
-
-    if (state.cart.length === 0) {
-      if (emptyCartMsg) emptyCartMsg.hidden = false;
-      const items = cartItemsList.querySelectorAll('.cart-item');
-      items.forEach(el => el.remove());
-      return;
-    }
-
-    if (emptyCartMsg) emptyCartMsg.hidden = true;
-
-    const existingCards = cartItemsList.querySelectorAll('.cart-item');
-    existingCards.forEach(el => el.remove());
-
-    state.cart.forEach((item) => {
-      const itemEl = document.createElement('div');
-      itemEl.className = 'cart-item';
-      itemEl.innerHTML = `
-        <div class="item-main-row">
-          <div class="item-info">
-            <span class="item-title">${item.tierName}</span>
-            <span class="item-meta">Edition: <strong>${item.finishName}</strong></span>
-          </div>
-          <span class="item-price">₹${item.price * item.qty}</span>
-        </div>
-
-        <div class="item-tech-tags">
-          ${item.nfc ? '<span class="tech-tag">NFC Enabled</span>' : ''}
-          ${item.qr ? '<span class="tech-tag">QR Code</span>' : ''}
-          ${item.fileName !== 'None' ? `<span class="tech-tag">Artwork: ${item.fileName}</span>` : ''}
-        </div>
-
-        <div class="item-controls-row">
-          <div class="qty-controls">
-            <button class="qty-btn minus-btn" data-id="${item.id}">-</button>
-            <span class="qty-num">${item.qty}</span>
-            <button class="qty-btn plus-btn" data-id="${item.id}">+</button>
-          </div>
-          <button class="btn-remove-item" data-id="${item.id}">Remove</button>
-        </div>
-      `;
-
-      cartItemsList.appendChild(itemEl);
-    });
-
-    cartItemsList.querySelectorAll('.minus-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.target.dataset.id;
-        const item = state.cart.find(i => i.id === id);
-        if (item) {
-          if (item.qty > 1) {
-            item.qty--;
-          } else {
-            state.cart = state.cart.filter(i => i.id !== id);
-          }
-          saveCart();
-        }
-      });
-    });
-
-    cartItemsList.querySelectorAll('.plus-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.target.dataset.id;
-        const item = state.cart.find(i => i.id === id);
-        if (item) {
-          item.qty++;
-          saveCart();
-        }
-      });
-    });
-
-    cartItemsList.querySelectorAll('.btn-remove-item').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.target.dataset.id;
-        state.cart = state.cart.filter(i => i.id !== id);
-        saveCart();
-      });
-    });
-  }
-
-  // ==========================================
-  // 6. CHECKOUT COMPILERS (WhatsApp & Email)
-  // ==========================================
-
-  const checkoutWhatsappBtn = document.getElementById('checkout-whatsapp-btn');
-  const checkoutEmailBtn = document.getElementById('checkout-email-btn');
-
-  function generateOrderSummaryText() {
-    if (state.cart.length === 0) return '';
-
-    let text = `Hello NEXUS, I would like to place an order for Google Review Display Cards:\n\n`;
-
-    let total = 0;
-    state.cart.forEach((item, index) => {
-      const itemTotal = item.price * item.qty;
-      total += itemTotal;
-      text += `*Item ${index + 1}:* ${item.tierName}\n`;
-      text += `• Edition: ${item.finishName}\n`;
-      text += `• Features: ${item.nfc ? 'NFC Enabled' : 'No NFC'}, ${item.qr ? 'QR Code' : 'No QR'}\n`;
-      text += `• Google URL: ${item.googleUrl}\n`;
-      if (item.fileName !== 'None') {
-        text += `• Artwork File: ${item.fileName}\n`;
+    let orderText = `Hello NEXUS, I would like to place an order for a Google Review NFC Acrylic Display:\n\n`;
+    orderText += `*ORDER SELECTION*\n`;
+    orderText += `• Package: ${tierInfo.name} (₹${tierInfo.price})\n`;
+    orderText += `• Edition: ${finishInfo.name}\n`;
+    orderText += `• Material: 4mm Imported Acrylic Sheet\n`;
+    orderText += `• Features: ${state.nfcEnabled ? 'NFC Chip Enabled' : 'No NFC'}, ${state.qrEnabled ? 'Printed QR Code Included' : 'No QR'}\n`;
+    
+    if (state.selectedTier === 'custom') {
+      if (state.uploadedFile) {
+        orderText += `• Custom Artwork File: ${state.uploadedFile.name}\n`;
+      } else {
+        orderText += `• Custom Artwork: Will attach directly in WhatsApp chat\n`;
       }
-      text += `• Qty: ${item.qty} x ₹${item.price} = ₹${itemTotal}\n\n`;
-    });
+    }
+    orderText += `\n`;
 
-    text += `*Total Amount:* ₹${total} (GST & Shipping Included)\n`;
-    text += `Please confirm payment details to finalize printing!`;
+    let detailsList = [];
+    if (businessName) detailsList.push(`• Business Name: ${businessName}`);
+    if (contactInfo) detailsList.push(`• Contact Person: ${contactInfo}`);
+    if (deliveryAddress) detailsList.push(`• Delivery Address: ${deliveryAddress}`);
+    if (googleUrl) detailsList.push(`• Google Review Page URL: ${googleUrl}`);
 
-    return text;
+    if (detailsList.length > 0) {
+      orderText += `*BUSINESS & DELIVERY DETAILS*\n` + detailsList.join('\n') + `\n\n`;
+    }
+
+    orderText += `*TOTAL AMOUNT:* ₹${tierInfo.price} (GST & Shipping Included)\n\n`;
+    orderText += `Please send payment confirmation details to finalize printing!`;
+
+    const whatsappPhone = '918850938139';
+    const waUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(orderText)}`;
+    window.open(waUrl, '_blank');
   }
 
-  checkoutWhatsappBtn?.addEventListener('click', () => {
-    if (state.cart.length === 0) {
-      alert('Your cart is empty! Add an item before checking out.');
-      return;
+  // Primary Get Quote button action
+  whatsappDirectOrderBtn?.addEventListener('click', () => {
+    if (state.selectedTier === 'custom') {
+      openArtworkModal();
+    } else {
+      sendOrderToWhatsApp();
     }
-    const orderText = generateOrderSummaryText();
-    const whatsappPhone = '919876543210';
-    const url = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(orderText)}`;
-    window.open(url, '_blank');
   });
 
-  checkoutEmailBtn?.addEventListener('click', () => {
-    if (state.cart.length === 0) {
-      alert('Your cart is empty! Add an item before checking out.');
-      return;
-    }
-    const orderText = generateOrderSummaryText();
-    const mailto = `mailto:orders@nexuscards.com?subject=${encodeURIComponent('New NEXUS Review Card Order Request')}&body=${encodeURIComponent(orderText)}`;
-    window.location.href = mailto;
+  // Modal proceed button action
+  modalSubmitWhatsappBtn?.addEventListener('click', () => {
+    sendOrderToWhatsApp();
+    closeArtworkModal();
   });
 
   // ==========================================
-  // 7. FAQ ACCORDION LOGIC
+  // 6. FAQ ACCORDION LOGIC
   // ==========================================
 
   const faqBtns = document.querySelectorAll('.faq-question-btn');
@@ -607,9 +437,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ==========================================
+  // 7. SPOTLIGHT AUTO FADE SLIDESHOW (Swaps every 2.2s)
+  // ==========================================
+  const spotlightImg1 = document.getElementById('spotlight-img-1');
+  const spotlightImg2 = document.getElementById('spotlight-img-2');
+
+  if (spotlightImg1 && spotlightImg2) {
+    let activeImg = 1;
+    setInterval(() => {
+      if (activeImg === 1) {
+        spotlightImg1.classList.remove('active');
+        spotlightImg2.classList.add('active');
+        activeImg = 2;
+      } else {
+        spotlightImg2.classList.remove('active');
+        spotlightImg1.classList.add('active');
+        activeImg = 1;
+      }
+    }, 2200);
+  }
+
   // Initialize view (Royal Blue & White Edition is index 0)
   updateFinishDisplay(0);
   updatePriceDisplay();
-  renderCart();
 
 });
