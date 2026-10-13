@@ -83,7 +83,7 @@ body {
   max-width: 100%;
   background: 
     linear-gradient(145deg, rgba(2, 1, 6, 0.75) 0%, rgba(10, 3, 20, 0.8) 50%, rgba(3, 1, 8, 0.88) 100%),
-    url('assets/nexus_purple_bg.jpg') center/cover no-repeat fixed;
+    url('assets/voltix_purple_bg.jpg') center/cover no-repeat fixed;
   background-attachment: fixed;
   overflow-x: hidden;
   position: relative;
@@ -2585,7 +2585,7 @@ body, .glass-panel, .glass-panel-subtle, .site-header, .site-footer, .btn, .tier
 body[data-theme="light"] {
   background: 
     linear-gradient(145deg, rgba(248, 250, 252, 0.75) 0%, rgba(241, 245, 249, 0.85) 100%),
-    url('assets/nexus_light_bg.jpg') center/cover no-repeat fixed !important;
+    url('assets/voltix_light_bg.jpg') center/cover no-repeat fixed !important;
   color: #090D1F !important;
   --text-frost: #090D1F;
   --text-muted: rgba(9, 13, 31, 0.8);

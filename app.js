@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadedFile: null,
     nfcEnabled: true,
     qrEnabled: true,
-    theme: localStorage.getItem('voltix_theme') || localStorage.getItem('nexus_theme') || 'dark',
-    cart: JSON.parse(localStorage.getItem('voltix_nfc_cart') || localStorage.getItem('nexus_nfc_cart') || '[]')
+    theme: localStorage.getItem('voltix_theme') || 'dark',
+    cart: JSON.parse(localStorage.getItem('voltix_nfc_cart') || '[]')
   };
 
   // Theme Toggle Controller
