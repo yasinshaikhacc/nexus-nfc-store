@@ -746,7 +746,7 @@
       <!-- Modal Header -->
       <div class="modal-header">
         <div>
-          <span class="modal-subtitle" id="modal-order-subtitle">🔒 256-BIT CONCIERGE ORDER • VOLTIX</span>
+          <span class="modal-subtitle" id="modal-order-subtitle">🔒 256-BIT ORDER VERIFICATION • VOLTIX</span>
           <h3 id="artwork-modal-title" class="modal-title">Order Review & Verification</h3>
         </div>
         <button type="button" id="artwork-modal-close-btn" class="modal-close-btn" aria-label="Close modal">&times;</button>
@@ -754,7 +754,7 @@
 
       <div class="modal-body">
         <p class="modal-desc" id="modal-order-desc">
-          No passwords or complex account setup required! Verify your order details before proceeding to your dedicated VOLTIX specialist on WhatsApp:
+          Verify your order details below to connect with your VOLTIX specialist on WhatsApp:
         </p>
 
         <!-- Executive Order Summary Receipt Box -->
@@ -769,7 +769,7 @@
           <div class="receipt-details-list">
             <div class="receipt-row">
               <span class="receipt-label">Business / Shop:</span>
-              <strong class="receipt-val" id="modal-receipt-shop">To be confirmed in chat</strong>
+              <strong class="receipt-val" id="modal-receipt-shop">To be confirmed on WhatsApp</strong>
             </div>
             <div class="receipt-row">
               <span class="receipt-label">Delivery Location:</span>
@@ -782,7 +782,7 @@
           </div>
         </div>
 
-        <!-- 3-Step Fulfillment Roadmap -->
+        <!-- 3-Step Fulfillment Roadmap (Streamlined & Professional) -->
         <div class="modal-fulfillment-roadmap">
           <span class="roadmap-heading">HOW YOUR ORDER IS FULFILLED</span>
           
@@ -790,38 +790,38 @@
             <div class="roadmap-step-item">
               <span class="step-circle">1</span>
               <div class="step-info">
-                <strong>Instant WhatsApp Connect</strong>
-                <p>Pre-filled order draft opens in 1 tap. Share your Google or Instagram link with our team.</p>
+                <strong id="modal-step1-title">Instant WhatsApp Connect</strong>
+                <p id="modal-step1-desc">Pre-filled order draft opens in 1 tap. Share your Google or Instagram link with our team.</p>
               </div>
             </div>
 
             <div class="roadmap-step-item">
               <span class="step-circle">2</span>
               <div class="step-info">
-                <strong>Free Digital 3D Proof</strong>
-                <p>We generate and share a 3D digital mock-up of your acrylic card for your sign-off before printing.</p>
+                <strong id="modal-step2-title">Free Digital 3D Proof</strong>
+                <p id="modal-step2-desc">We generate and share a 3D digital mock-up of your acrylic card for your sign-off before printing.</p>
               </div>
             </div>
 
             <div class="roadmap-step-item">
               <span class="step-circle">3</span>
               <div class="step-info">
-                <strong>Express Courier Dispatch</strong>
-                <p>Cured with industrial UV print, tested, and dispatched within 24-48 hours with live tracking.</p>
+                <strong id="modal-step3-title">Pre-Programmed & Dispatched</strong>
+                <p id="modal-step3-desc">NFC & QR configured, UV print cured, and dispatched within 24–48h with tracking.</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Dynamic Additional Guide Items -->
-        <div class="proceed-guide-card" id="modal-guide-container">
-          <!-- Populated dynamically by app.js based on selected tier / combo -->
-        </div>
+        <!-- Hidden placeholder to prevent any script breakage -->
+        <div id="modal-guide-container" style="display: none;"></div>
 
         <!-- Trust Guarantees Strip -->
         <div class="modal-trust-strip">
           <span class="trust-pill-sm">🛡️ 100% Quality Guarantee</span>
+          <span class="trust-bullet">•</span>
           <span class="trust-pill-sm">✨ Free 3D Proofing</span>
+          <span class="trust-bullet">•</span>
           <span class="trust-pill-sm">🚚 Express Courier Tracking</span>
         </div>
       </div>

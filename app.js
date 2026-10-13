@@ -460,71 +460,52 @@ document.addEventListener('DOMContentLoaded', () => {
       modalSubmitBtnLabel.textContent = `Confirm Order & Open WhatsApp Chat (₹${currentPrice})`;
     }
 
-    if (modalGuideContainer) {
+    const modalStep1Title = document.getElementById('modal-step1-title');
+    const modalStep1Desc = document.getElementById('modal-step1-desc');
+    const modalStep2Title = document.getElementById('modal-step2-title');
+    const modalStep2Desc = document.getElementById('modal-step2-desc');
+    const modalStep3Title = document.getElementById('modal-step3-title');
+    const modalStep3Desc = document.getElementById('modal-step3-desc');
+
+    if (modalStep1Title && modalStep1Desc) {
       if (isBoth) {
-        modalGuideContainer.innerHTML = `
-          <div class="guide-item">
-            <span class="guide-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            </span>
-            <div>
-              <strong>Share Google & Instagram Links</strong>
-              <p>Send both your Google Business link and Instagram profile link directly in our WhatsApp chat.</p>
-            </div>
-          </div>
-          <div class="guide-item">
-            <span class="guide-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </span>
-            <div>
-              <strong>${isCustom ? 'Share Shop Logo & Branding' : 'Combo Pre-Programmed & Tested'}</strong>
-              <p>${isCustom ? 'Send your shop logo or branding references in chat for bespoke layout proofing.' : 'Both cards arrive pre-programmed with high-strength double-sided tape, ready to use!'}</p>
-            </div>
-          </div>
-        `;
+        modalStep1Title.textContent = 'Share Google & Instagram Links';
+        modalStep1Desc.textContent = 'Pre-filled order draft opens in 1 tap. Send both page links directly in chat.';
       } else if (isCustom) {
-        modalGuideContainer.innerHTML = `
-          <div class="guide-item">
-            <span class="guide-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </span>
-            <div>
-              <strong>Share Shop Logo & Reference Images</strong>
-              <p>Send your shop logo, reference photos, or graphics directly in our WhatsApp chat.</p>
-            </div>
-          </div>
-          <div class="guide-item">
-            <span class="guide-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            </span>
-            <div>
-              <strong>Share Destination Link</strong>
-              <p>Send your Google Business or Instagram page link — our team will verify it and share a digital 3D proof before printing.</p>
-            </div>
-          </div>
-        `;
+        modalStep1Title.textContent = 'Share Shop Logo & Reference';
+        modalStep1Desc.textContent = 'Pre-filled draft opens in 1 tap. Send your logo or graphics directly in WhatsApp.';
       } else {
-        modalGuideContainer.innerHTML = `
-          <div class="guide-item">
-            <span class="guide-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-            </span>
-            <div>
-              <strong>Share Destination Link in Chat</strong>
-              <p>Send your Google Business or Instagram link directly on WhatsApp — we will test and verify it for you.</p>
-            </div>
-          </div>
-          <div class="guide-item">
-            <span class="guide-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </span>
-            <div>
-              <strong>Instant Setup & Verified Pre-Programming</strong>
-              <p>We program the contactless NFC chip and print the HD QR code with your verified link before shipping.</p>
-            </div>
-          </div>
-        `;
+        modalStep1Title.textContent = 'Instant WhatsApp Connect';
+        modalStep1Desc.textContent = 'Pre-filled order draft opens in 1 tap. Share your Google or Instagram link with our team.';
       }
+    }
+
+    if (modalStep2Title && modalStep2Desc) {
+      if (isBoth) {
+        modalStep2Title.textContent = 'Free 3D Proof for Both Cards';
+        modalStep2Desc.textContent = 'We render 3D digital mock-ups of both acrylic cards for your sign-off before printing.';
+      } else if (isCustom) {
+        modalStep2Title.textContent = 'Bespoke 3D Layout Proof';
+        modalStep2Desc.textContent = 'Custom digital mock-up created and shared for your sign-off before UV printing.';
+      } else {
+        modalStep2Title.textContent = 'Free Digital 3D Proof';
+        modalStep2Desc.textContent = 'We generate and share a 3D digital mock-up of your acrylic card for your sign-off before printing.';
+      }
+    }
+
+    if (modalStep3Title && modalStep3Desc) {
+      if (isBoth) {
+        modalStep3Title.textContent = 'Pre-Programmed & Dispatched';
+        modalStep3Desc.textContent = 'Both cards NFC-configured, QR printed, and dispatched within 24–48h with tracking.';
+      } else {
+        modalStep3Title.textContent = 'Pre-Programmed & Dispatched';
+        modalStep3Desc.textContent = 'NFC & QR configured, UV print cured, and dispatched within 24–48h with tracking.';
+      }
+    }
+
+    if (modalGuideContainer) {
+      modalGuideContainer.innerHTML = '';
+      modalGuideContainer.style.display = 'none';
     }
   }
 
