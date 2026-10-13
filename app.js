@@ -1,5 +1,5 @@
 /**
- * NEXUS Storefront & Micro-App Controller
+ * VOLTIX Storefront & Micro-App Controller (voltixtap.com)
  * Handles nav tab switching, 3D stacked card peek-through & swap switcher,
  * dynamic customization builder, shopping cart state management, and WhatsApp / Email order compiler.
  */
@@ -11,26 +11,41 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
 
   const TIER_DATA = {
-    normal: { id: 'normal', name: 'Normal Print', price: 600, desc: 'Flat acrylic review card with embedded NFC chip & printed QR code. (Without stand).' },
-    stand: { id: 'stand', name: 'Normal Print + Base Stand', price: 850, desc: 'Acrylic review card complete with matching slotted acrylic pedestal stand for counter placement.' },
-    custom: { id: 'custom', name: 'Custom Full Print', price: 1200, desc: 'Fully bespoke brand layout & logo print — matching acrylic pedestal stand included.' }
+    normal: { 
+      id: 'normal', 
+      name: 'Normal Print', 
+      singlePrice: 750, 
+      bothPrice: 1350, 
+      originalBothPrice: 1500,
+      discount: 150,
+      desc: 'Pre-designed Google or Instagram card with embedded NFC chip & printed QR code. Includes high-strength double-sided tape — use as a counter card or stick anywhere.' 
+    },
+    custom: { 
+      id: 'custom', 
+      name: 'Custom Full Print', 
+      singlePrice: 1200, 
+      bothPrice: 2250, 
+      originalBothPrice: 2400,
+      discount: 150,
+      desc: 'Fully bespoke brand layout & logo print with embedded NFC chip & printed QR code. Includes high-strength double-sided tape — use as a counter card or stick anywhere.' 
+    }
   };
 
-  // Strictly 2 Editions: Royal Blue & White (First / Default Front) and Black (Peeping Back)
+  // Strictly 2 Editions: Royal Blue & White (Google Review) and Instagram Follow Edition (Sunset Gradient)
   const FINISH_VARIANTS = [
     {
       id: 'blue',
-      name: 'Royal Blue & White Edition',
+      name: 'Google Review Edition (Royal Blue)',
       imageSrc: 'assets/google_card_blue.png',
-      desc: 'Vibrant royal blue header with signature cyan wave line, NFC tap zone, and crisp QR code.',
+      desc: 'Vibrant royal blue header with signature wave line, contactless NFC tap zone, and crisp QR code to boost 5-star Google reviews.',
       glowColor: 'rgba(56, 189, 248, 0.45)'
     },
     {
-      id: 'black',
-      name: 'Black Edition',
-      imageSrc: 'assets/google_card_black.jpg',
-      desc: 'Classic black header layout with high-contrast Google G emblem, NFC tap zone, and QR code.',
-      glowColor: 'rgba(30, 58, 138, 0.4)'
+      id: 'instagram',
+      name: 'Instagram Follow Edition',
+      imageSrc: 'assets/instagram_card.jpg',
+      desc: 'Signature Instagram sunset gradient layout with instant NFC tap zone and QR code to skyrocket your Instagram followers & customer engagement.',
+      glowColor: 'rgba(236, 72, 153, 0.55)'
     }
   ];
 
@@ -38,12 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const state = {
     activeTab: 'review',
     currentFinishIndex: 0,
-    selectedTier: 'stand',
+    selectedTier: 'normal',
+    selectedEdition: 'blue',
     uploadedFile: null,
     nfcEnabled: true,
     qrEnabled: true,
-    theme: localStorage.getItem('nexus_theme') || 'dark',
-    cart: JSON.parse(localStorage.getItem('nexus_nfc_cart') || '[]')
+    theme: localStorage.getItem('voltix_theme') || localStorage.getItem('nexus_theme') || 'dark',
+    cart: JSON.parse(localStorage.getItem('voltix_nfc_cart') || localStorage.getItem('nexus_nfc_cart') || '[]')
   };
 
   // Theme Toggle Controller
@@ -54,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyTheme(themeName) {
     state.theme = themeName;
     document.body.setAttribute('data-theme', themeName);
-    localStorage.setItem('nexus_theme', themeName);
+    localStorage.setItem('voltix_theme', themeName);
 
     if (themeName === 'light') {
       if (iconSun) iconSun.style.display = 'none';
@@ -86,6 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const cardStack = document.getElementById('card-stack');
   const cardBlue = document.getElementById('card-blue');
   const cardBlack = document.getElementById('card-black');
+  const heroMockupCard = document.getElementById('hero-mockup-card');
+  const heroImgBlue = document.getElementById('hero-img-blue');
+  const heroImgInstagram = document.getElementById('hero-img-instagram');
   const heroImgDisplay = document.getElementById('hero-img-display');
   const variantNameDisplay = document.getElementById('variant-name-display');
   const variantDescDisplay = document.getElementById('variant-desc-display');
@@ -96,27 +115,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let isSwapping = false;
 
-  function updateFinishDisplay(index) {
-    if (isSwapping) return;
-    state.currentFinishIndex = index;
-    const activeVariant = FINISH_VARIANTS[index];
+  // ==========================================
+  // A. THE ABOVE CARD (HERO MOCKUP): Auto-changes every 5-6 seconds
+  // ==========================================
+  let currentHeroIndex = 0;
+  let heroAutoCycleTimer = null;
+  const HERO_CYCLE_INTERVAL = 5500; // 5.5 seconds (cycles every 5-6 sec automatically)
 
-    // Smooth Hero Card Image crossfade
-    if (heroImgDisplay) {
+  function updateHeroDisplay(index) {
+    currentHeroIndex = index;
+    const variant = FINISH_VARIANTS[index];
+
+    if (heroImgBlue && heroImgInstagram) {
+      if (variant.id === 'blue') {
+        heroImgBlue.classList.remove('inactive');
+        heroImgInstagram.classList.remove('active');
+        if (heroMockupCard) {
+          heroMockupCard.classList.remove('edition-instagram');
+        }
+      } else {
+        heroImgBlue.classList.add('inactive');
+        heroImgInstagram.classList.add('active');
+        if (heroMockupCard) {
+          heroMockupCard.classList.add('edition-instagram');
+        }
+      }
+    } else if (heroImgDisplay) {
       heroImgDisplay.style.opacity = '0.2';
       setTimeout(() => {
-        heroImgDisplay.src = activeVariant.imageSrc;
-        heroImgDisplay.alt = `NEXUS ${activeVariant.name}`;
+        heroImgDisplay.src = variant.imageSrc;
+        heroImgDisplay.alt = `VOLTIX ${variant.name}`;
         heroImgDisplay.style.opacity = '1';
       }, 180);
     }
+  }
+
+  function startHeroAutoCycle() {
+    stopHeroAutoCycle();
+    heroAutoCycleTimer = setInterval(() => {
+      if (document.hidden) return;
+      const nextIdx = (currentHeroIndex + 1) % FINISH_VARIANTS.length;
+      updateHeroDisplay(nextIdx);
+    }, HERO_CYCLE_INTERVAL);
+  }
+
+  function stopHeroAutoCycle() {
+    if (heroAutoCycleTimer) {
+      clearInterval(heroAutoCycleTimer);
+      heroAutoCycleTimer = null;
+    }
+  }
+
+  // Allow clicking on the Hero card to toggle immediately
+  heroMockupCard?.addEventListener('click', () => {
+    const nextIdx = (currentHeroIndex + 1) % FINISH_VARIANTS.length;
+    updateHeroDisplay(nextIdx);
+    startHeroAutoCycle();
+  });
+
+  // Pause hero cycle on hover so user can inspect details without interruption
+  heroMockupCard?.addEventListener('mouseenter', stopHeroAutoCycle);
+  heroMockupCard?.addEventListener('mouseleave', startHeroAutoCycle);
+
+
+  // ==========================================
+  // B. THE BELOW CARD (SHOWCASE 3D STACK): ONLY changes on tap or click
+  // ==========================================
+  function updateShowcaseDisplay(index) {
+    if (isSwapping) return;
+    state.currentFinishIndex = index;
+    const activeVariant = FINISH_VARIANTS[index];
 
     if (cardStack) {
       isSwapping = true;
       cardStack.classList.add('swapping');
 
       setTimeout(() => {
-        // Toggle Stack Classes based on active edition
+        // Toggle 3D Stack Classes based on active edition
         if (activeVariant.id === 'blue') {
           if (cardBlue) {
             cardBlue.className = 'stacked-card card-blue active-front';
@@ -147,13 +222,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (variantDescDisplay) variantDescDisplay.textContent = activeVariant.desc;
     }
 
-    // Update Swatch Buttons & Color Option Cards
+    // Update Swatch Buttons in Showcase
     swatchBtns.forEach((btn) => {
       const isSelected = btn.dataset.finish === activeVariant.id;
       btn.classList.toggle('active', isSelected);
       btn.setAttribute('aria-checked', isSelected ? 'true' : 'false');
     });
 
+    // Synchronize selected edition with storefront
+    state.selectedEdition = activeVariant.id;
     const colorOptionCards = document.querySelectorAll('.color-option-card');
     colorOptionCards.forEach((card) => {
       const isSelected = card.dataset.color === activeVariant.id;
@@ -161,35 +238,39 @@ document.addEventListener('DOMContentLoaded', () => {
       const radio = card.querySelector('.color-radio-input');
       if (radio) radio.checked = isSelected;
     });
+    updatePriceDisplay();
   }
 
-  // Click on the Stack itself to Swap Front / Peeping Back cards manually!
-  cardStack?.addEventListener('click', () => {
-    const nextIdx = (state.currentFinishIndex + 1) % FINISH_VARIANTS.length;
-    updateFinishDisplay(nextIdx);
+  // Left Arrow: ONLY changes when clicked or tapped
+  prevFinishBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const nextIdx = (state.currentFinishIndex - 1 + FINISH_VARIANTS.length) % FINISH_VARIANTS.length;
+    updateShowcaseDisplay(nextIdx);
   });
 
+  // Right Arrow: ONLY changes when clicked or tapped
+  nextFinishBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const nextIdx = (state.currentFinishIndex + 1) % FINISH_VARIANTS.length;
+    updateShowcaseDisplay(nextIdx);
+  });
+
+  // Clicking on the Showcase Stack Card: changes edition
+  cardStack?.addEventListener('click', () => {
+    const nextIdx = (state.currentFinishIndex + 1) % FINISH_VARIANTS.length;
+    updateShowcaseDisplay(nextIdx);
+  });
+
+  // Swatch Buttons in Showcase
   swatchBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const finishId = btn.dataset.finish;
       const index = FINISH_VARIANTS.findIndex(v => v.id === finishId);
       if (index !== -1 && index !== state.currentFinishIndex) {
-        updateFinishDisplay(index);
+        updateShowcaseDisplay(index);
       }
     });
-  });
-
-  prevFinishBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const nextIdx = (state.currentFinishIndex - 1 + FINISH_VARIANTS.length) % FINISH_VARIANTS.length;
-    updateFinishDisplay(nextIdx);
-  });
-
-  nextFinishBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const nextIdx = (state.currentFinishIndex + 1) % FINISH_VARIANTS.length;
-    updateFinishDisplay(nextIdx);
   });
 
   // ==========================================
@@ -207,13 +288,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const deliveryAddressInput = document.getElementById('delivery-address-input');
   const whatsappDirectOrderBtn = document.getElementById('whatsapp-direct-order-btn');
 
+  function getCurrentPrice() {
+    const tier = TIER_DATA[state.selectedTier] || TIER_DATA.normal;
+    if (state.selectedEdition === 'both') {
+      return tier.bothPrice;
+    }
+    return tier.singlePrice;
+  }
+
   function updatePriceDisplay() {
     const selectedRadio = document.querySelector('.tier-radio-input:checked');
     if (selectedRadio) {
-      const tierId = selectedRadio.value;
-      state.selectedTier = tierId;
-      const price = TIER_DATA[tierId].price;
-      if (computedPriceText) computedPriceText.textContent = `₹${price}`;
+      state.selectedTier = selectedRadio.value;
+    }
+    const currentPrice = getCurrentPrice();
+    const isBoth = state.selectedEdition === 'both';
+    const tier = TIER_DATA[state.selectedTier] || TIER_DATA.normal;
+
+    if (computedPriceText) {
+      if (isBoth) {
+        computedPriceText.innerHTML = `<del class="cut-price-computed">₹${tier.originalBothPrice}</del><span class="active-combo-price">₹${tier.bothPrice}</span><span class="combo-discount-badge">Save ₹${tier.discount}</span>`;
+      } else {
+        computedPriceText.textContent = `₹${currentPrice}`;
+      }
+    }
+
+    // Dynamic price labels on tier cards depending on whether Both is selected
+    const normalPriceEl = document.querySelector('[data-tier-id="tier-normal"] .tier-price');
+    const customPriceEl = document.querySelector('[data-tier-id="tier-custom"] .tier-price');
+    if (normalPriceEl) {
+      if (isBoth) {
+        normalPriceEl.innerHTML = `<del class="cut-price">₹${TIER_DATA.normal.originalBothPrice}</del> ₹${TIER_DATA.normal.bothPrice}`;
+      } else {
+        normalPriceEl.textContent = `₹${TIER_DATA.normal.singlePrice}`;
+      }
+    }
+    if (customPriceEl) {
+      if (isBoth) {
+        customPriceEl.innerHTML = `<del class="cut-price">₹${TIER_DATA.custom.originalBothPrice}</del> ₹${TIER_DATA.custom.bothPrice}`;
+      } else {
+        customPriceEl.textContent = `₹${TIER_DATA.custom.singlePrice}`;
+      }
     }
 
     tierCards.forEach(card => {
@@ -226,6 +341,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function selectEdition(editionId) {
+    state.selectedEdition = editionId;
+
+    const colorOptionCards = document.querySelectorAll('.color-option-card');
+    colorOptionCards.forEach(card => {
+      const isSelected = card.dataset.color === editionId;
+      card.classList.toggle('active', isSelected);
+      const radio = card.querySelector('.color-radio-input');
+      if (radio) radio.checked = isSelected;
+    });
+
+    if (editionId === 'blue') {
+      updateShowcaseDisplay(0);
+    } else if (editionId === 'instagram') {
+      updateShowcaseDisplay(1);
+    } else if (editionId === 'both') {
+      // In showcase, show both cards in stack
+      if (cardBlue && cardBlack) {
+        cardBlue.className = 'stacked-card card-blue active-front';
+        cardBlack.className = 'stacked-card card-black peeping-back';
+      }
+      if (variantNameDisplay) {
+        variantNameDisplay.textContent = 'Both Cards (Google Review + Instagram Follow)';
+      }
+      if (variantDescDisplay) {
+        variantDescDisplay.textContent = 'Complete 2-card combo pack: 1x Google Review card + 1x Instagram Follow card with instant contactless NFC & QR codes.';
+      }
+    }
+
+    updatePriceDisplay();
+  }
+
   // Initial call on page load
   updatePriceDisplay();
 
@@ -233,42 +380,157 @@ document.addEventListener('DOMContentLoaded', () => {
     input.addEventListener('change', updatePriceDisplay);
   });
 
-  toggleNfc?.addEventListener('change', (e) => {
-    state.nfcEnabled = e.target.checked;
-  });
-
-  toggleQr?.addEventListener('change', (e) => {
-    state.qrEnabled = e.target.checked;
-  });
-
-  const colorRadioInputs = document.querySelectorAll('.color-radio-input');
-  colorRadioInputs.forEach(input => {
-    input.addEventListener('change', (e) => {
-      const colorId = e.target.value;
-      const index = FINISH_VARIANTS.findIndex(v => v.id === colorId);
-      if (index !== -1) {
-        updateFinishDisplay(index);
-      }
+  const colorOptionCards = document.querySelectorAll('.color-option-card');
+  colorOptionCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      const colorId = card.dataset.color;
+      selectEdition(colorId);
     });
   });
 
+  // Pause hero cycle when browser tab is inactive, resume when active
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopHeroAutoCycle();
+    } else {
+      startHeroAutoCycle();
+    }
+  });
+
   // ==========================================
-  // 5. ARTWORK MODAL & DIRECT WHATSAPP ORDER COMPILER
+  // 5. PROCEED CONFIRMATION MODAL & WHATSAPP ORDER COMPILER
   // ==========================================
 
   const artworkModalOverlay = document.getElementById('artwork-modal-overlay');
   const artworkModalCloseBtn = document.getElementById('artwork-modal-close-btn');
   const modalSubmitWhatsappBtn = document.getElementById('modal-submit-whatsapp-btn');
+  const modalOrderSubtitle = document.getElementById('modal-order-subtitle');
+  const modalOrderDesc = document.getElementById('modal-order-desc');
+  const modalPillPackage = document.getElementById('modal-pill-package');
+  const modalPillEdition = document.getElementById('modal-pill-edition');
+  const modalPillPrice = document.getElementById('modal-pill-price');
+  const modalGuideContainer = document.getElementById('modal-guide-container');
+  const modalReceiptShop = document.getElementById('modal-receipt-shop');
+  const modalReceiptDest = document.getElementById('modal-receipt-dest');
+  const modalSubmitBtnLabel = document.getElementById('modal-submit-btn-label');
 
-  const dropzone = document.getElementById('dropzone');
-  const artworkFileInput = document.getElementById('artwork-file-input');
-  const uploadPreview = document.getElementById('upload-preview');
-  const previewImgElement = document.getElementById('preview-img-element');
-  const previewFilename = document.getElementById('preview-filename');
-  const removeFileBtn = document.getElementById('remove-file-btn');
+  function updateModalContent() {
+    const tierInfo = TIER_DATA[state.selectedTier] || TIER_DATA.normal;
+    const isBoth = state.selectedEdition === 'both';
+    const isCustom = state.selectedTier === 'custom';
+    const currentPrice = getCurrentPrice();
+    const enteredBusiness = businessNameInput?.value.trim();
+    const enteredAddress = deliveryAddressInput?.value.trim();
+
+    let editionName = 'Google Review';
+    if (state.selectedEdition === 'instagram') {
+      editionName = 'Instagram Follow';
+    } else if (isBoth) {
+      editionName = 'Both Cards (Combo)';
+    }
+
+    if (modalOrderSubtitle) {
+      if (isBoth) {
+        modalOrderSubtitle.textContent = '🔒 2-CARD COMBO PACK • VOLTIX CONCIERGE';
+      } else if (isCustom) {
+        modalOrderSubtitle.textContent = '🔒 BESPOKE CUSTOM PRINT • VOLTIX CONCIERGE';
+      } else {
+        modalOrderSubtitle.textContent = '🔒 256-BIT ORDER VERIFICATION • VOLTIX';
+      }
+    }
+
+    if (modalPillPackage) modalPillPackage.textContent = tierInfo.name;
+    if (modalPillEdition) modalPillEdition.textContent = editionName;
+    if (modalPillPrice) {
+      if (isBoth) {
+        modalPillPrice.innerHTML = `<del class="cut-price" style="font-size:0.85rem;">₹${tierInfo.originalBothPrice}</del> ₹${tierInfo.bothPrice}`;
+      } else {
+        modalPillPrice.textContent = `₹${currentPrice}`;
+      }
+    }
+
+    if (modalReceiptShop) {
+      modalReceiptShop.textContent = enteredBusiness || 'To be confirmed on WhatsApp';
+    }
+    if (modalReceiptDest) {
+      modalReceiptDest.textContent = enteredAddress || 'Pan-India Express Courier';
+    }
+    if (modalSubmitBtnLabel) {
+      modalSubmitBtnLabel.textContent = `Confirm Order & Open WhatsApp Chat (₹${currentPrice})`;
+    }
+
+    if (modalGuideContainer) {
+      if (isBoth) {
+        modalGuideContainer.innerHTML = `
+          <div class="guide-item">
+            <span class="guide-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            <div>
+              <strong>Share Google & Instagram Links</strong>
+              <p>Send both your Google Business link and Instagram profile link directly in our WhatsApp chat.</p>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </span>
+            <div>
+              <strong>${isCustom ? 'Share Shop Logo & Branding' : 'Combo Pre-Programmed & Tested'}</strong>
+              <p>${isCustom ? 'Send your shop logo or branding references in chat for bespoke layout proofing.' : 'Both cards arrive pre-programmed with high-strength double-sided tape, ready to use!'}</p>
+            </div>
+          </div>
+        `;
+      } else if (isCustom) {
+        modalGuideContainer.innerHTML = `
+          <div class="guide-item">
+            <span class="guide-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </span>
+            <div>
+              <strong>Share Shop Logo & Reference Images</strong>
+              <p>Send your shop logo, reference photos, or graphics directly in our WhatsApp chat.</p>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            <div>
+              <strong>Share Destination Link</strong>
+              <p>Send your Google Business or Instagram page link — our team will verify it and share a digital 3D proof before printing.</p>
+            </div>
+          </div>
+        `;
+      } else {
+        modalGuideContainer.innerHTML = `
+          <div class="guide-item">
+            <span class="guide-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            <div>
+              <strong>Share Destination Link in Chat</strong>
+              <p>Send your Google Business or Instagram link directly on WhatsApp — we will test and verify it for you.</p>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </span>
+            <div>
+              <strong>Instant Setup & Verified Pre-Programming</strong>
+              <p>We program the contactless NFC chip and print the HD QR code with your verified link before shipping.</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+  }
 
   function openArtworkModal() {
     if (!artworkModalOverlay) return;
+    updateModalContent();
     artworkModalOverlay.hidden = false;
     artworkModalOverlay.classList.add('open');
   }
@@ -289,109 +551,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Handle File Selection inside Modal Dropzone
-  function handleFileSelect(file) {
-    if (!file) return;
-    state.uploadedFile = file;
-
-    if (previewFilename) previewFilename.textContent = file.name;
-
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (previewImgElement) previewImgElement.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    } else {
-      if (previewImgElement) previewImgElement.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="%2338BDF8" stroke-width="2"%3E%3Cpath d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"%3E%3C/path%3E%3Cpolyline points="14 2 14 8 20 8"%3E%3C/polyline%3E%3C/svg%3E';
-    }
-
-    if (dropzone) {
-      dropzone.hidden = true;
-      dropzone.style.display = 'none';
-    }
-    if (uploadPreview) {
-      uploadPreview.hidden = false;
-      uploadPreview.style.display = 'flex';
-    }
-  }
-
-  artworkFileInput?.addEventListener('change', (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFileSelect(e.target.files[0]);
-    }
-  });
-
-  dropzone?.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-  });
-
-  dropzone?.addEventListener('dragleave', () => {
-    dropzone.classList.remove('dragover');
-  });
-
-  dropzone?.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropzone.classList.remove('dragover');
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileSelect(e.dataTransfer.files[0]);
-    }
-  });
-
-  removeFileBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    state.uploadedFile = null;
-    if (artworkFileInput) artworkFileInput.value = '';
-    if (previewImgElement) previewImgElement.src = '';
-    if (previewFilename) previewFilename.textContent = '';
-    if (uploadPreview) {
-      uploadPreview.hidden = true;
-      uploadPreview.style.display = 'none';
-    }
-    if (dropzone) {
-      dropzone.hidden = false;
-      dropzone.style.display = 'block';
-    }
-  });
-
   function sendOrderToWhatsApp() {
-    const tierInfo = TIER_DATA[state.selectedTier] || TIER_DATA.stand;
-    const finishInfo = FINISH_VARIANTS[state.currentFinishIndex] || FINISH_VARIANTS[0];
-    
-    const googleUrl = googleUrlInput?.value.trim() || '';
+    const tierInfo = TIER_DATA[state.selectedTier] || TIER_DATA.normal;
+    const currentPrice = getCurrentPrice();
+    const isBoth = state.selectedEdition === 'both';
     const businessName = businessNameInput?.value.trim() || '';
     const contactInfo = contactNameInput?.value.trim() || '';
     const deliveryAddress = deliveryAddressInput?.value.trim() || '';
 
-    let orderText = `Hello NEXUS, I would like to place an order for a Google Review NFC Acrylic Display:\n\n`;
-    orderText += `*ORDER SELECTION*\n`;
-    orderText += `• Package: ${tierInfo.name} (₹${tierInfo.price})\n`;
-    orderText += `• Edition: ${finishInfo.name}\n`;
-    orderText += `• Material: 4mm Imported Acrylic Sheet\n`;
-    orderText += `• Features: ${state.nfcEnabled ? 'NFC Chip Enabled' : 'No NFC'}, ${state.qrEnabled ? 'Printed QR Code Included' : 'No QR'}\n`;
-    
-    if (state.selectedTier === 'custom') {
-      if (state.uploadedFile) {
-        orderText += `• Custom Artwork File: ${state.uploadedFile.name}\n`;
-      } else {
-        orderText += `• Custom Artwork: Will attach directly in WhatsApp chat\n`;
-      }
+    let orderText = '';
+
+    if (isBoth) {
+      orderText = `Hello VOLTIX, I would like to place an order for the *COMBO PACK (BOTH CARDS)*:\n\n`;
+      orderText += `*ORDER SELECTION*\n`;
+      orderText += `• Package: ${tierInfo.name} — 2-Card Combo Pack\n`;
+      orderText += `• Editions: BOTH CARDS (1× Google Review + 1× Instagram Follow)\n`;
+      orderText += `• Quantity: 2 Cards\n`;
+      orderText += `• Price: ~₹${tierInfo.originalBothPrice}~ ₹${currentPrice} (Save ₹${tierInfo.discount}!)\n\n`;
+    } else {
+      const finishInfo = FINISH_VARIANTS.find(v => v.id === state.selectedEdition) || FINISH_VARIANTS[0];
+      orderText = `Hello VOLTIX, I would like to place an order:\n\n`;
+      orderText += `*ORDER SELECTION*\n`;
+      orderText += `• Package: ${tierInfo.name}\n`;
+      orderText += `• Edition: ${finishInfo.name}\n`;
+      orderText += `• Quantity: 1 Card\n`;
+      orderText += `• Price: ₹${currentPrice}\n\n`;
     }
-    orderText += `\n`;
 
     let detailsList = [];
     if (businessName) detailsList.push(`• Business Name: ${businessName}`);
     if (contactInfo) detailsList.push(`• Contact Person: ${contactInfo}`);
     if (deliveryAddress) detailsList.push(`• Delivery Address: ${deliveryAddress}`);
-    if (googleUrl) detailsList.push(`• Google Review Page URL: ${googleUrl}`);
 
     if (detailsList.length > 0) {
       orderText += `*BUSINESS & DELIVERY DETAILS*\n` + detailsList.join('\n') + `\n\n`;
     }
 
-    orderText += `*TOTAL AMOUNT:* ₹${tierInfo.price} (GST & Shipping Included)\n\n`;
+    if (isBoth) {
+      orderText += `*TOTAL AMOUNT:* ₹${currentPrice} (Discounted from ~₹${tierInfo.originalBothPrice}~ | GST & Shipping Included)\n\n`;
+    } else {
+      orderText += `*TOTAL AMOUNT:* ₹${currentPrice} (GST & Shipping Included)\n\n`;
+    }
     orderText += `Please send payment confirmation details to finalize printing!`;
 
     const whatsappPhone = '918850938139';
@@ -399,13 +599,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open(waUrl, '_blank');
   }
 
-  // Primary Get Quote button action
+  // Primary Order button action — Opens confirmation modal on EVERY purchase (Basic, Custom, or Combo)
   whatsappDirectOrderBtn?.addEventListener('click', () => {
-    if (state.selectedTier === 'custom') {
-      openArtworkModal();
-    } else {
-      sendOrderToWhatsApp();
-    }
+    openArtworkModal();
   });
 
   // Modal proceed button action
@@ -458,8 +654,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 2200);
   }
 
-  // Initialize view (Royal Blue & White Edition is index 0)
-  updateFinishDisplay(0);
+  // Initialize view:
+  // Above card (Hero Mockup): Starts auto-cycling every 5-6 sec
+  updateHeroDisplay(0);
+  startHeroAutoCycle();
+
+  // Below card (Showcase 3D Stack): Set to Google Review Blue, ONLY changes when user taps/clicks arrows/cards
+  updateShowcaseDisplay(0);
   updatePriceDisplay();
 
 });
