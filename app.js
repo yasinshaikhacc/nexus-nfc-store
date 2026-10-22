@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     orderText += `Please send payment confirmation details to finalize printing!`;
 
-    const whatsappPhone = '918850938139';
+    const whatsappPhone = '918779242700';
     const waUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(orderText)}`;
     window.open(waUrl, '_blank');
   }
